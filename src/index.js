@@ -37,14 +37,15 @@ function checksTodoExists(request, response, next) {
    const { username } = request.headers;
 
    const user = users.find(user => user.username == username)
+
+   if(!user){
+    return response.status(404).json({ error:"User not Found!"})
+   }
+
    const findTodo = user.todos.find(todo => todo.id === id)
    
    if(!validate(id)){
     return response.status(400).json({ error:"Id not validate!"})
-   }
-
-   if(!user){
-    return response.status(404).json({ error:"User not Found!"})
    }
 
    if(!findTodo){
