@@ -26,7 +26,7 @@ function checksCreateTodosUserAvailability(request, response, next) {
   const { user } = request
   
   if(user.pro === false && user.todos.length >= 10){
-    return response.status(404).json({ error:"Limite alcançado!"})
+    return response.status(403).json({ error:"Limite alcançado!"})
   }
 
   return next()
@@ -36,8 +36,16 @@ function checksTodoExists(request, response, next) {
    const { id } = request.params;
    const { username } = request.headers;
 
-   const user = users.find(user => user.username === username)
+   const user = users.find(user => user.username == username)
    const findTodo = user.todos.find(todo => todo.id === id)
+   
+   if(!validate(id)){
+    return response.status(400).json({ error:"Id not validate!"})
+   }
+
+   if(!user){
+    return response.status(404).json({ error:"User not Found!"})
+   }
 
    if(!findTodo){
      return response.status(404).json({ error:"Todo not Found!"})
